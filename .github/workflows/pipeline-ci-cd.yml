@@ -10,7 +10,7 @@ on:
 # ✅ Global Environment Variables
 env:
   BUILD_NUMBER: ${{ github.run_number }}  # Unique build number for the pipeline run
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/backend-api:${{ github.run_number }}
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/frontend-app:${{ github.run_number }}
   BACKEND_URL: "https://api.53.lebondeveloppeur.net"
 
 jobs:
@@ -72,13 +72,11 @@ jobs:
             sudo docker pull ${{ env.IMAGE_NAME }}
 
             # Remove the old container if it exists
-            sudo docker ps -q --filter name=backend-api | grep -q . && sudo docker rm -f backend-api || echo "No existing container to remove"
+            sudo docker ps -q --filter name=frontend-app | grep -q . && sudo docker rm -f frontend-app || echo "No existing container to remove"
 
             # Run the new container with environment variables
             sudo docker run -d \
-              --name backend-api \
-              --network backend-api-net \
-              -p 3001:3001 \
-              -e MONGO_URI=${{ secrets.MONGO_URI }} \
+              --name frontend-app \
+              -p 3000:80 \
               --restart=always \
               ${{ env.IMAGE_NAME }}
